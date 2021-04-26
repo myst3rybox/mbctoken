@@ -58,14 +58,12 @@ contract MbcErc20 is ERC20 {
     }
     /**
     * @dev Burn MBC from user address.
-    * @param _from The address of user.
     * @param _value The quantity of MBC.
     */
-    function burn(address _from, uint256 _value) 
-    public onlyOwner{
-        require(address(0) != _from, "Invalid address");
-        _burn(_from, _value);
-        emit Burn(_from, _value);
+    function burn(uint256 _value) 
+    public {
+        _burn(msg.sender, _value);
+        emit Burn(msg.sender, _value);
     }
     /**
     * @dev Change owner to a new address.
