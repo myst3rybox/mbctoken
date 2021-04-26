@@ -78,4 +78,19 @@ contract("MbcERC20", accounts => {
             "MbcERC20 transfer recviver NOT match."
         );
     });
+
+    it("MbcERC20 should burn", async () => {
+        let instance = await MbcERC20.deployed();
+        let balance = await instance.balanceOf(accounts[3]);
+        assert.equal(
+            balance.toString(), 100 * One,
+            "MbcERC20 balance NOT match."
+        );
+        await instance.burn(balance, {from: accounts[3]});
+        balance = await instance.balanceOf(accounts[3]);
+        assert.equal(
+            balance.toString(), 0,
+            "MbcERC20 burn failed."
+        );
+    });
 });
