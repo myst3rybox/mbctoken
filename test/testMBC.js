@@ -35,6 +35,15 @@ contract("MbcERC20", accounts => {
             "MbcERC20 moneyer address NOT match."
         );
     });
+    it("MbcERC20 should set caller address.", async () => {
+        let instance = await MbcERC20.deployed();
+        await instance.setCaller(accounts[9], true, {from: accounts[1]});
+        let rights = await instance.map_caller(accounts[9]);
+        assert.equal(
+            rights, true,
+            "MbcERC20 caller address NOT match."
+        );
+    });
     it("MbcERC20 should mint", async () => {
         let instance = await MbcERC20.deployed();
         let totalSupply = await instance.totalSupply.call();
@@ -43,7 +52,7 @@ contract("MbcERC20", accounts => {
             "MbcERC20 totalSupply NOT match."
         );
         let mint_value = 100 * One //100000000000000000000
-        await instance.mint(accounts[2], "0x"+mint_value.toString(16), {from: accounts[1]});
+        await instance.mint(accounts[2], "0x"+mint_value.toString(16), {from: accounts[9]});
         totalSupply = await instance.totalSupply.call();
         assert.equal(
             totalSupply.toString(), mint_value * 1.05,

@@ -16,6 +16,8 @@ contract MbcErc20 is ERC20 {
     uint public TOTAL_SUPPLY = 0;
     address public owner_address;
     address public moneyer_address;
+    // Mapping from caller address to access rights
+    mapping(address => bool) public map_caller;
     /*
         Events
     */
@@ -34,12 +36,26 @@ contract MbcErc20 is ERC20 {
         require(msg.sender == owner_address, "Not owner");
         _;
     }
+    modifier onlyCaller(){
+        require(map_caller[msg.sender], "Not owner");
+        _;
+    }
     /*
         Functions
     */
     constructor() ERC20("Mystery Box Coin", "MBC") {
         owner_address = msg.sender;
         moneyer_address = msg.sender;
+        map_caller[msg.sender] = true;
+    }
+    /**
+    * @dev set caller access rights.
+    * @param _caller The address of caller.
+    * @param _access The rights of access.
+    */
+    function setCaller(address _caller, bool _access)
+    public onlyOwner{
+        map_caller[_caller] = _access;
     }
     /**
     * @dev mint MBC to user address.
@@ -47,7 +63,7 @@ contract MbcErc20 is ERC20 {
     * @param _value The quantity of MBC.
     */
     function mint(address _to, uint256 _value) 
-    public onlyOwner{
+    public onlyCaller{
         require(address(0) != _to, "Invalid address");
         uint256 total = _value.mul(21).div(20);    // include 5% seignorage 
         require(total.add(totalSupply()) <= MAX_SUPPLY, "Total supply is Overflow");
