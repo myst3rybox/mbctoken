@@ -46,7 +46,7 @@ contract MbcErc20 is ERC20 {
     constructor() ERC20("Mystery Box Coin", "MBC") {
         owner_address = msg.sender;
         moneyer_address = msg.sender;
-        map_caller[msg.sender] = true;
+        setCaller(msg.sender, true)
     }
     /**
     * @dev set caller access rights.
